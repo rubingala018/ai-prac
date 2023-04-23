@@ -1,0 +1,439 @@
+3.BFS
+
+
+# Python3 Program to print BFS traversal
+# from a given source vertex. BFS(int s)
+# traverses vertices reachable from s.
+
+from collections import defaultdict
+
+
+# This class represents a directed graph
+# using adjacency list representation
+class Graph:
+
+	# Constructor
+	def __init__(self):
+
+		# Default dictionary to store graph
+		self.graph = defaultdict(list)
+
+	# Function to add an edge to graph
+	def addEdge(self, u, v):
+		self.graph[u].append(v)
+
+	# Function to print a BFS of graph
+	def BFS(self, s):
+
+		# Mark all the vertices as not visited
+		visited = [False] * (max(self.graph) + 1)
+
+		# Create a queue for BFS
+		queue = []
+
+		# Mark the source node as
+		# visited and enqueue it
+		queue.append(s)
+		visited[s] = True
+
+		while queue:
+
+			# Dequeue a vertex from
+			# queue and print it
+			s = queue.pop(0)
+			print(s, end=" ")
+
+			# Get all adjacent vertices of the
+			# dequeued vertex s. If a adjacent
+			# has not been visited, then mark it
+			# visited and enqueue it
+			for i in self.graph[s]:
+				if visited[i] == False:
+					queue.append(i)
+					visited[i] = True
+
+
+# Driver code
+if __name__ == '__main__':
+
+	# Create a graph given in
+	# the above diagram
+	g = Graph()
+	g.addEdge(0, 1)
+	g.addEdge(0, 2)
+	g.addEdge(1, 2)
+	g.addEdge(2, 0)
+	g.addEdge(2, 3)
+	g.addEdge(3, 3)
+
+	print("Following is Breadth First Traversal"
+		" (starting from vertex 2)")
+	g.BFS(2)
+
+# This code is contributed by Neelam Yadav
+
+
+4. DFS  
+
+
+# Python3 program to print DFS traversal
+# from a given graph
+from collections import defaultdict
+
+# This class represents a directed graph using
+# adjacency list representation
+
+
+class Graph:
+
+	# Constructor
+	def __init__(self):
+
+		# default dictionary to store graph
+		self.graph = defaultdict(list)
+
+	# function to add an edge to graph
+	def addEdge(self, u, v):
+		self.graph[u].append(v)
+
+	# A function used by DFS
+	def DFSUtil(self, v, visited):
+
+		# Mark the current node as visited
+		# and print it
+		visited.add(v)
+		print(v, end=' ')
+
+		# Recur for all the vertices
+		# adjacent to this vertex
+		for neighbour in self.graph[v]:
+			if neighbour not in visited:
+				self.DFSUtil(neighbour, visited)
+
+	# The function to do DFS traversal. It uses
+	# recursive DFSUtil()
+	def DFS(self, v):
+
+		# Create a set to store visited vertices
+		visited = set()
+
+		# Call the recursive helper function
+		# to print DFS traversal
+		self.DFSUtil(v, visited)
+
+# Driver's code
+
+
+# Create a graph given
+# in the above diagram
+if __name__ == "__main__":
+	g = Graph()
+	g.addEdge(0, 1)
+	g.addEdge(0, 2)
+	g.addEdge(1, 2)
+	g.addEdge(2, 0)
+	g.addEdge(2, 3)
+	g.addEdge(3, 3)
+
+	print("Following is DFS from (starting from vertex 2)")
+	# Function call
+	g.DFS(2)
+
+# This code is contributed by Neelam Yadav
+
+
+5.8 queens Problem
+
+
+N = 8 # (size of the chessboard)
+ 
+def solveNQueens(board, col):
+    if col == N:
+        print(board)
+        return True
+    for i in range(N):
+        if isSafe(board, i, col):
+            board[i][col] = 1
+            if solveNQueens(board, col + 1):
+                return True
+            board[i][col] = 0
+    return False
+ 
+def isSafe(board, row, col):
+    for x in range(col):
+        if board[row][x] == 1:
+            return False
+    for x, y in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[x][y] == 1:
+            return False
+    for x, y in zip(range(row, N, 1), range(col, -1, -1)):
+        if board[x][y] == 1:
+            return False
+    return True
+ 
+board = [[0 for x in range(N)] for y in range(N)]
+if not solveNQueens(board, 0):
+    print("No solution found")
+
+
+6. MinMax algo
+
+
+# Python3 program to demonstrate
+# working of Alpha-Beta Pruning
+
+# Initial values of Alpha and Beta
+MAX, MIN = 1000, -1000
+
+# Returns optimal value for current player
+#(Initially called for root and maximizer)
+def minimax(depth, nodeIndex, maximizingPlayer,
+			values, alpha, beta):
+
+	# Terminating condition. i.e
+	# leaf node is reached
+	if depth == 3:
+		return values[nodeIndex]
+
+	if maximizingPlayer:
+	
+		best = MIN
+
+		# Recur for left and right children
+		for i in range(0, 2):
+			
+			val = minimax(depth + 1, nodeIndex * 2 + i,
+						False, values, alpha, beta)
+			best = max(best, val)
+			alpha = max(alpha, best)
+
+			# Alpha Beta Pruning
+			if beta <= alpha:
+				break
+		
+		return best
+	
+	else:
+		best = MAX
+
+		# Recur for left and
+		# right children
+		for i in range(0, 2):
+		
+			val = minimax(depth + 1, nodeIndex * 2 + i,
+							True, values, alpha, beta)
+			best = min(best, val)
+			beta = min(beta, best)
+
+			# Alpha Beta Pruning
+			if beta <= alpha:
+				break
+		
+		return best
+	
+# Driver Code
+if __name__ == "__main__":
+
+	values = [3, 5, 6, 9, 1, 2, 0, -1]
+	print("The optimal value is :", minimax(0, 0, True, values, MIN, MAX))
+	
+
+7.A* algo
+
+
+def aStarAlgo(start_node, stop_node):
+    open_set = set(start_node)
+    closed_set = set()
+    g = {}               #store distance from starting node
+    parents = {}         # parents contains an adjacency map of all nodes
+    #distance of starting node from itself is zero
+    g[start_node] = 0
+    #start_node is root node i.e it has no parent nodes
+    #so start_node is set to its own parent node
+    parents[start_node] = start_node
+    while len(open_set) > 0:
+        n = None
+        #node with lowest f() is found
+        for v in open_set:
+            if n == None or g[v] + heuristic(v) < g[n] + heuristic(n):
+                n = v
+        if n == stop_node or Graph_nodes[n] == None:
+            pass
+        else:
+            for (m, weight) in get_neighbors(n):
+                #nodes 'm' not in first and last set are added to first
+                #n is set its parent
+                if m not in open_set and m not in closed_set:
+                    open_set.add(m)
+                    parents[m] = n
+                    g[m] = g[n] + weight
+                #for each node m,compare its distance from start i.e g(m) to the
+                #from start through n node
+                else:
+                    if g[m] > g[n] + weight:
+                        #update g(m)
+                        g[m] = g[n] + weight
+                        #change parent of m to n
+                        parents[m] = n
+                        #if m in closed set,remove and add to open
+                        if m in closed_set:
+                            closed_set.remove(m)
+                            open_set.add(m)
+        if n == None:
+            print('Path does not exist!')
+            return None
+        
+        # if the current node is the stop_node
+        # then we begin reconstructin the path from it to the start_node
+        if n == stop_node:
+            path = []
+            while parents[n] != n:
+                path.append(n)
+                n = parents[n]
+            path.append(start_node)
+            path.reverse()
+            print('Path found: {}'.format(path))
+            return path
+        # remove n from the open_list, and add it to closed_list
+        # because all of his neighbors were inspected
+        open_set.remove(n)
+        closed_set.add(n)
+    print('Path does not exist!')
+    return None
+
+#define fuction to return neighbor and its distance
+#from the passed node
+def get_neighbors(v):
+    if v in Graph_nodes:
+        return Graph_nodes[v]
+    else:
+        return None
+        
+#for simplicity we ll consider heuristic distances given
+#and this function returns heuristic distance for all nodes
+def heuristic(n):
+    H_dist = {
+        'A': 10,
+        'B': 8,
+        'C': 5,
+        'D': 7,
+        'E': 3,
+        'F': 6,
+        'G': 5,
+        'H': 3,
+        'I': 1,
+        'J': 0
+    }
+    return H_dist[n]
+
+#Describe your graph here
+Graph_nodes = {
+    'A': [('B', 6), ('F', 3)],
+    'B': [('A', 6), ('C', 3), ('D', 2)],
+    'C': [('B', 3), ('D', 1), ('E', 5)],
+    'D': [('B', 2), ('C', 1), ('E', 8)],
+    'E': [('C', 5), ('D', 8), ('I', 5), ('J', 5)],
+    'F': [('A', 3), ('G', 1), ('H', 7)],
+    'G': [('F', 1), ('I', 3)],
+    'H': [('F', 7), ('I', 2)],
+    'I': [('E', 5), ('G', 3), ('H', 2), ('J', 3)],
+}
+
+aStarAlgo('A', 'J')
+
+#for simplicity we ll consider heuristic distances given
+#and this function returns heuristic distance for all nodes
+def heuristic(n):
+    H_dist = {
+        'A': 11,
+        'B': 6,
+        'C': 99,
+        'D': 1,
+        'E': 7,
+        'G': 0,
+    }
+    return H_dist[n]
+
+#Describe your graph here
+Graph_nodes = {
+    'A': [('B', 2), ('E', 3)],
+    'B': [('A', 2), ('C', 1), ('G', 9)],
+    'C': [('B', 1)],
+    'D': [('E', 6), ('G', 1)],
+    'E': [('A', 3), ('D', 6)],
+    'G': [('B', 9), ('D', 1)]
+}
+
+aStarAlgo('A', 'G')
+
+
+
+8. tic tac toe (normal, not a*)
+
+
+
+
+# Set up the game board as a list
+board = ["-", "-", "-",
+		"-", "-", "-",
+		"-", "-", "-"]
+
+# Define a function to print the game board
+def print_board():
+	print(board[0] + " | " + board[1] + " | " + board[2])
+	print(board[3] + " | " + board[4] + " | " + board[5])
+	print(board[6] + " | " + board[7] + " | " + board[8])
+
+# Define a function to handle a player's turn
+def take_turn(player):
+	print(player + "'s turn.")
+	position = input("Choose a position from 1-9: ")
+	while position not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
+		position = input("Invalid input. Choose a position from 1-9: ")
+	position = int(position) - 1
+	while board[position] != "-":
+		position = int(input("Position already taken. Choose a different position: ")) - 1
+	board[position] = player
+	print_board()
+
+# Define a function to check if the game is over
+def check_game_over():
+	# Check for a win
+	if (board[0] == board[1] == board[2] != "-") or \
+	(board[3] == board[4] == board[5] != "-") or \
+	(board[6] == board[7] == board[8] != "-") or \
+	(board[0] == board[3] == board[6] != "-") or \
+	(board[1] == board[4] == board[7] != "-") or \
+	(board[2] == board[5] == board[8] != "-") or \
+	(board[0] == board[4] == board[8] != "-") or \
+	(board[2] == board[4] == board[6] != "-"):
+		return "win"
+	# Check for a tie
+	elif "-" not in board:
+		return "tie"
+	# Game is not over
+	else:
+		return "play"
+
+# Define the main game loop
+def play_game():
+	print_board()
+	current_player = "X"
+	game_over = False
+	while not game_over:
+		take_turn(current_player)
+		game_result = check_game_over()
+		if game_result == "win":
+			print(current_player + " wins!")
+			game_over = True
+		elif game_result == "tie":
+			print("It's a tie!")
+			game_over = True
+		else:
+			# Switch to the other player
+			current_player = "O" if current_player == "X" else "X"
+
+# Start the game
+play_game()
+
+
